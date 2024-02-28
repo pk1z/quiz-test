@@ -4,9 +4,9 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\QuestionRepository;
-use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
 #[ApiResource]
@@ -20,12 +20,10 @@ class Question
     #[ORM\Column(length: 255)]
     private ?string $questionText = null;
 
-
-
-    #[ORM\OneToMany( targetEntity:Answer::class, mappedBy:'question')]
+    #[ORM\OneToMany(targetEntity: Answer::class, mappedBy: 'question')]
     private Collection $answers;
 
-    #[ORM\OneToMany( targetEntity:UserQuestions::class, mappedBy:'question')]
+    #[ORM\OneToMany(targetEntity: UserQuestions::class, mappedBy: 'question')]
     private Collection $userQuestions;
 
     public function getUserQuestions(): Collection

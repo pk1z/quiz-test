@@ -6,9 +6,6 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\UserQuestionsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-
-
-
 #[ORM\Entity(repositoryClass: UserQuestionsRepository::class)]
 #[ApiResource]
 class UserQuestions
@@ -34,10 +31,10 @@ class UserQuestions
     #[ORM\Column(nullable: true)]
     private ?bool $isCorrect = null;
 
-    #[ORM\ManyToOne(targetEntity:Question::class, inversedBy:'userQuestions')]
+    #[ORM\ManyToOne(targetEntity: Question::class, inversedBy: 'userQuestions')]
     private ?Question $question = null;
 
-    #[ORM\ManyToOne(targetEntity:User::class, inversedBy:'userQuestions')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'userQuestions')]
     private ?User $user = null;
 
     public function getUser(): ?User
@@ -49,7 +46,6 @@ class UserQuestions
     {
         $this->user = $user;
     }
-
 
     public function getId(): ?int
     {

@@ -1,53 +1,37 @@
 <?php
 
-// src/Service/TestService.php
-
 namespace App\Service;
 
-//use App\Repository\QuestionRepository;
-//use App\Repository\TestResultRepository;
 use App\Entity\User;
 use App\Entity\UserAnswer;
 use App\Entity\UserQuestions;
 use App\Repository\AnswerRepository;
 use App\Repository\QuestionRepository;
-use App\Repository\TestResultRepository;
 use App\Repository\UserQuestionsRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Uid\Uuid;
-
 
 class TestService
 {
     private $questionRepository;
-    private $testResultRepository;
-
     private $userRepository;
-
     private $userQuestionRepository;
-
     private $answerRepository;
     private $manager;
-//    private $session;
 
-    public function __construct(QuestionRepository      $questionRepository, TestResultRepository $testResultRepository,
-                                UserRepository          $userRepository,
-                                UserQuestionsRepository $userQuestionRepository,
-                                AnswerRepository        $answerRepository,
-                                EntityManagerInterface  $manager)
-//    public function __construct()
-
-            {
+    public function __construct(QuestionRepository $questionRepository,
+        UserRepository $userRepository,
+        UserQuestionsRepository $userQuestionRepository,
+        AnswerRepository $answerRepository,
+        EntityManagerInterface $manager)
+    {
         $this->questionRepository = $questionRepository;
-        $this->testResultRepository = $testResultRepository;
         $this->userRepository = $userRepository;
         $this->userQuestionRepository = $userQuestionRepository;
         $this->answerRepository = $answerRepository;
         $this->manager = $manager;
-//        $this->session = $session;
     }
 
     public function initializeTest(): string
@@ -67,7 +51,7 @@ class TestService
             $userQuestion->setQuestion($question);
             $userQuestion->setStepNumber($step);
             $userQuestion->setUser($user);
-            $step++;
+            ++$step;
 
             $this->manager->persist($userQuestion);
         }
@@ -76,7 +60,6 @@ class TestService
 
         return $user->getUuid();
     }
-
 
     public function getAnswersForStep(string $uuid, int $step): array
     {
@@ -91,6 +74,7 @@ class TestService
 
         return $answers;
     }
+
     public function getQuestionForStep(string $uuid, int $step): ?string
     {
         $user = $this->userRepository->findOneBy([
@@ -128,7 +112,6 @@ class TestService
         $afterAllResult = true;
 
         foreach ($answerIds as $answerId) {
-
             $answer = $this->answerRepository->findOneBy([
                 'id' => $answerId,
             ]);
@@ -137,7 +120,7 @@ class TestService
                 throw new NotFoundHttpException('answer not found');
             }
 
-            if ($answer->isCorrect() === false) {
+            if (false === $answer->isCorrect()) {
                 $afterAllResult = false;
             }
 
@@ -172,10 +155,5 @@ class TestService
             'correct_answers' => $this->userQuestionRepository->findAnswersByUser($uuid, true),
             'incorrect_answers' => $this->userQuestionRepository->findAnswersByUser($uuid, false),
         ];
-    }
-
-    public function restartTest(string $uuid): void
-    {
-        // Reset the test session for the given UUID to allow restarting the test
     }
 }

@@ -19,7 +19,6 @@ class UserQuestionsRepository extends ServiceEntityRepository
 {
     public function findAnswersByUser($uuid, $isCorrect)
     {
-
         return $this->createQueryBuilder('uq')
             ->select('q.questionText')
             ->join('uq.user', 'u')
@@ -31,8 +30,7 @@ class UserQuestionsRepository extends ServiceEntityRepository
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
-            ;
-
+        ;
     }
 
     public function findOneByStepAndUser($user, $step)
@@ -45,10 +43,8 @@ class UserQuestionsRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->getQuery()
             ->getOneOrNullResult()
-            ;
+        ;
     }
-
-
 
     public function __construct(ManagerRegistry $registry)
     {

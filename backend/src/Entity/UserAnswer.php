@@ -15,8 +15,7 @@ class UserAnswer
     #[ORM\Column]
     private ?int $id = null;
 
-
-    #[ORM\ManyToOne(targetEntity:Answer::class, inversedBy:'userAnswers')]
+    #[ORM\ManyToOne(targetEntity: Answer::class, inversedBy: 'userAnswers')]
     private ?Answer $answer = null;
 
     public function getAnswer(): ?Answer
@@ -29,12 +28,10 @@ class UserAnswer
         $this->answer = $answer;
     }
 
-    #[ORM\ManyToOne(targetEntity:Question::class, inversedBy:'userAnswers')]
-
+    #[ORM\ManyToOne(targetEntity: Question::class, inversedBy: 'userAnswers')]
     private ?Question $question = null;
 
-    #[ORM\ManyToOne(targetEntity:User::class, inversedBy:'userAnswers')]
-
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'userAnswers')]
     private ?User $user = null;
 
     public function getQuestion(): ?Question

@@ -6,9 +6,8 @@ namespace App\Controller\Api;
 
 use App\Service\TestService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api')]
@@ -25,6 +24,7 @@ class MainController extends AbstractController
     public function startTest(): JsonResponse
     {
         $uuid = $this->testService->initializeTest();
+
         return $this->json(['uuid' => $uuid]);
     }
 
@@ -46,6 +46,7 @@ class MainController extends AbstractController
     {
         $data = json_decode($request->getContent(), true);
         $isCorrect = $this->testService->submitAnswers($uuid, $step, $data['answers']);
+
         return $this->json(['isCorrect' => $isCorrect]);
     }
 
@@ -53,13 +54,7 @@ class MainController extends AbstractController
     public function getResults(string $uuid): JsonResponse
     {
         $results = $this->testService->getTestResults($uuid);
-        return $this->json($results);
-    }
 
-    #[Route('/restart/{uuid}', name: 'api_test_restart', methods: ['POST'])]
-    public function restartTest(string $uuid): JsonResponse
-    {
-        $this->testService->restartTest($uuid);
-        return $this->json(['message' => 'Test restarted successfully.']);
+        return $this->json($results);
     }
 }

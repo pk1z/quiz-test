@@ -21,8 +21,7 @@ class Answer
     #[ORM\Column]
     private ?bool $isCorrect = null;
 
-    #[ORM\ManyToOne(targetEntity:Question::class, inversedBy:'answers')]
-
+    #[ORM\ManyToOne(targetEntity: Question::class, inversedBy: 'answers')]
     private ?Question $question = null;
 
     public function getQuestion(): ?Question
