@@ -1,0 +1,63 @@
+version: '3'
+
+services:
+
+  database:
+    image: postgres:${POSTGRES_VERSION:-16}-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+#    ports:
+#      - "5432:5432"
+    volumes:
+      - quiz_system_database_data:/var/lib/postgresql/data:rw
+
+  symfony_nginx:
+    build:
+      context: .
+      dockerfile: images/nginx/Dockerfile
+#    volumes:
+#      - .:/var/www/html
+#      - ./images/nginx/client_max_body_size.conf:/etc/nginx/conf.d/client_max_body_size.conf:ro
+#      - ./nginx/symfony.conf:/etc/nginx/conf.d/default.conf
+    command: nginx -g "daemon off;"
+    links:
+      - php
+#    ports:
+#      - "8000:80"
+
+  php:
+    build:
+      context: .
+      dockerfile: images/php/Dockerfile
+#    volumes:
+#      - .:/var/www/html
+#    working_dir: /var/www/html
+#    ports:
+#      - "9000:9000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  react_frontend:
+    build:
+      context: ../front
+      dockerfile: Dockerfile
+#    volumes:
+#      - ../front/build:/usr/share/nginx/html
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile-proxy
+    ports:
+      - "80:80"
+    depends_on:
+      - react_frontend
+      - symfony_nginx
+
+volumes:
+  ###> doctrine/doctrine-bundle ###
+  quiz_system_database_data:
+    external: true
+  ###< doctrine/doctrine-bundle ###
